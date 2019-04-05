@@ -9,6 +9,6 @@ package be;
  *
  * @author Henrik Ferrari
  */
-public class Teacher {
+public class Teacher implements Person{
     
 }

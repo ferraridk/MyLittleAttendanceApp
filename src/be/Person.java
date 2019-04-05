@@ -9,6 +9,6 @@ package be;
  *
  * @author Henrik Ferrari
  */
-public class Person {
+public interface Person {
     
 }
