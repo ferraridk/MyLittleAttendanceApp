@@ -1,14 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package be;
+
+import java.util.ArrayList;
 
 /**
  *
- * @author Henrik Ferrari
+ * @author Christian Occhionero
  */
+<<<<<<< HEAD
 public class Teacher 
 {
     private String tName;
@@ -59,4 +57,27 @@ public class Teacher
     }
     
     
+=======
+public class Teacher extends Person
+{
+private ArrayList<SchoolClass> classes;
+
+ public Teacher (String name, int id, String email)
+    {
+       super(name,  id, email);
+        classes = new ArrayList<>();
+        
+    }
+ 
+ public void addClass(SchoolClass classToAdd)
+ {
+     classes.add(classToAdd);
+ }
+ 
+ public ArrayList<SchoolClass> getAllClasses()
+ {
+     return classes;
+ }
+>>>>>>> f7b4c219253bb5d4c30f2c771d73fe95e1173a6a
 }
+

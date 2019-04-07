@@ -7,8 +7,9 @@ package dal;
 
 /**
  *
- * @author Henrik Ferrari
+ * @author Caspe
  */
-public class ClassDBDAO {
+public class ClassDbDAO
+{
     
 }
