@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package gui.model;
+package dal;
 
 /**
  *
- * @author Henrik Ferrari
+ * @author Caspe
  */
-public class GUIModel {
+public class ClassDbDAO
+{
     
 }
