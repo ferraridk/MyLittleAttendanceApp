@@ -9,8 +9,10 @@ import be.SchoolClass;
 import be.Student;
 import be.Teacher;
 import bll.SchoolAppManager;
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 import java.io.IOException;
 import java.sql.Date;
+import java.sql.SQLException;
 
 /**
  *
@@ -19,7 +21,7 @@ import java.sql.Date;
 public class SchoolAppModel
 {
 
-    private final SchoolAppManager manager;
+     private final SchoolAppManager manager;
     private Student s;
     private ObservableList<Attendance> oList;
     private ObservableList<SchoolClass> classList;
@@ -53,14 +55,4 @@ public class SchoolAppModel
     {
         manager.askForAttendance(id,chosenAttendance);
     }
-
-    public Teacher getTeacher()
-    {
-        Teacher t1 = manager.getTeacher();
-        classList.addAll(manager.getTeacher().getAllClasses());
-        t=t1;
-        return t1;
-    }
-    
-    
 }

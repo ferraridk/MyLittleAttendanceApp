@@ -37,8 +37,10 @@ import be.Attendance;
 import be.SchoolClass;
 import be.Student;
 import be.Teacher;
+import dal.AttendanceDbDAO;
 import gui.model.SchoolAppModel;
 import gui.controller.LoginController;
+import java.sql.SQLException;
 import javafx.scene.control.ListView;
 
 /**
@@ -90,6 +92,10 @@ public class TeacherViewController implements Initializable
     @FXML
     private AnchorPane teacherPage;
     private BorderPane rootLayout;
+    private static Teacher teach;
+    private AttendanceDbDAO attDb;
+    private Student selectedStudent;
+    private SchoolClass selectedClass;
 
     /**
      * Initializes the controller class.
@@ -97,76 +103,88 @@ public class TeacherViewController implements Initializable
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
+         try {
+            model = new SchoolAppModel();
+
+            // init tableview
+            name.setCellValueFactory(new PropertyValueFactory<>("name"));
+            schoolClass.setCellValueFactory(new PropertyValueFactory<>("schoolClass"));
+            email.setCellValueFactory(new PropertyValueFactory<>("email"));
+            absence.setCellValueFactory(new PropertyValueFactory<>("abPercentage"));
+            absence.setSortType(TableColumn.SortType.DESCENDING);
+
+            classChooser.setItems(model.getAllClasses());
+            classChooser.getSelectionModel().selectFirst();
+            //Setting up the charts
+
+            chart.setTitle("Fraværshistorik");
+            chart.setLegendVisible(false);
+            chart.setAnimated(false);
+
+            dayChart.setLegendVisible(false);
+            dayChart.setTitle("Fravær pr. dag");
+            dayChart.setAnimated(false);
+
+            tName.setText("Navn");
+            tMail.setText("email");
 
 
-        teacher = model.getTeacher();
-
-        // init tableview
-        name.setCellValueFactory(new PropertyValueFactory<>("name"));
-        schoolClass.setCellValueFactory(new PropertyValueFactory<>("schoolClass"));
-        email.setCellValueFactory(new PropertyValueFactory<>("email"));
-        absence.setCellValueFactory(new PropertyValueFactory<>("abPercentage"));
-        absence.setSortType(TableColumn.SortType.DESCENDING);
-
-        classChooser.setItems(model.getAllClasses());
-        classChooser.getSelectionModel().selectFirst();
-        //Setting up the charts
-
-        chart.setTitle("Fraværshistorik");
-        chart.setLegendVisible(false);
-        chart.setAnimated(false);
-
-        dayChart.setLegendVisible(false);
-        dayChart.setTitle("Fravær pr. dag");
-        dayChart.setAnimated(false);
-
-        tName.setText(teacher.getName());
-        tMail.setText(teacher.getEmail());
-
-        classChooser.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>()
-        {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
+//            tName.setText(teacher.getName());
+//            tMail.setText(teacher.getEmail());
+//
+            classChooser.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>()
             {
-                Platform.runLater(new Runnable()
+                @Override
+                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
                 {
-                    @Override
-                    public void run()
+                    Platform.runLater(new Runnable()
                     {
-                        try
+                        @Override
+                        public void run()
                         {
-                            setTableView();
-                            calculateAverageAbsence();
-                        } catch (ParseException ex)
-                        {
-                            Logger.getLogger(TeacherViewController.class.getName()).log(Level.SEVERE, null, ex);
+                            try
+                            {
+                                setTableView();
+                                calculateAverageAbsence();
+                            } catch (ParseException ex)
+                            {
+                                Logger.getLogger(TeacherViewController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
-                    }
-                });
+                    });
 
-            }
+                }
 
-        });
+            });
 
-        tableView.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>()
-        {
-
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
+            tableView.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>()
             {
-                Platform.runLater(new Runnable()
+
+                @Override
+                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue)
                 {
-                    @Override
-                    public void run()
+                    Platform.runLater(new Runnable()
                     {
+                        @Override
+                        public void run()
+                        {
 
-                        initStudentLineChart();
-                        initStudentBarChart();
-                    }
+                            try {
+                                initStudentLineChart();
+                                initStudentBarChart();
+                            } catch (IOException ex) {
+                                Logger.getLogger(TeacherViewController.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (SQLException ex) {
+                                Logger.getLogger(TeacherViewController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
 
-                });
-            }
-        });
+                    });
+                }
+            });
+        } catch (IOException ex) {
+            Logger.getLogger(TeacherViewController.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
     }
 
@@ -178,7 +196,7 @@ public class TeacherViewController implements Initializable
 
     }
 
-    private void initStudentLineChart()
+    private void initStudentLineChart() throws IOException, SQLException
     {
         chart.getData().clear();
         // Gets the selected student
@@ -190,7 +208,7 @@ public class TeacherViewController implements Initializable
 
     }
 
-    private void calculateAbsence(Student s)
+    private void calculateAbsence(Student s) throws IOException, SQLException
     {
 
         XYChart.Series<String, Double> series = new XYChart.Series<>();
@@ -304,7 +322,7 @@ public class TeacherViewController implements Initializable
             newStage.setWidth(1000);
             newStage.setResizable(false);
 
-            newScene.getStylesheets().add("attapp/gui/view/Style.css");
+            newScene.getStylesheets().add("/gui/view/Style.css");
 
             newStage.setScene(newScene);
             newStage.show();
@@ -355,11 +373,24 @@ public class TeacherViewController implements Initializable
         }
     }
 
+//    private void confirmAttendance(Student std, AttendanceDbDAO attend)
+//    {
+//        if (attend.checkForDailyAttendance(date) || !(attend.checkForDailyAttendance(date)))
+//        {
+//            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+//            confirm.setHeaderText("Anmodning om rettelse af fravær");
+//            confirm.setContentText("En elev har anmodet om rettelse af sit fravær. Vil du acceptere dette?");
+//            confirm.showAndWait();
+//            confirm.setResult(JA);
+//            confirm.setResult(NEJ);
+//        }
+//    }
+
     @FXML
     private void teacherLogOut(ActionEvent event) throws IOException
     {
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/attapp/gui/view/LoginView.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/view/LoginView.fxml"));
         Parent root = loader.load();
         LoginController con = loader.getController();
         con.setRootLayout(rootLayout);
@@ -370,8 +401,46 @@ public class TeacherViewController implements Initializable
     {
         this.rootLayout = rootLayout;
     }
- 
 
-            
+    @FXML
+    private void removeStudent(ActionEvent event) throws IOException, SQLException
+    {
+        selectedClass = classChooser.getSelectionModel().getSelectedItem();
+        selectedStudent = tableView.getSelectionModel().getSelectedItem();
+        attDb.removeStudent(selectedStudent);
+    }
 
-}
+    @FXML
+    private void addStudent(ActionEvent event) throws IOException
+    {
+//        Student selectedStudent = tableView.getSelectionModel().getSelectedItem();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("NewStudent.fxml"));
+        Parent root2 = (Parent)fxmlLoader.load();
+        Stage stage = new Stage();
+        gui.controller.NewStudentController newController = fxmlLoader.getController();
+//        newController.setMovieModel(movieModel);
+        newController.setTeacherViewController(this);
+//        newController.setNew();
+        stage.setTitle("Tilføj elev");
+        stage.setScene(new Scene(root2));
+        stage.show();
+    }
+
+    public void setTeacher(Teacher teacher)
+    {
+        this.teacher = teacher;
+    }
+
+    @FXML
+    private void changeAbForStud(ActionEvent event)
+    {
+    }
+    
+    
+
+
+
+
+    }
+
+

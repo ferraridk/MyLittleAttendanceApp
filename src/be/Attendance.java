@@ -14,17 +14,15 @@ import javafx.beans.property.StringProperty;
 public class Attendance
 {
 
+    private Date dateo; 
     private Calendar curDate;
-    private BooleanProperty wasThere;
-    private StringProperty attendance;
-    private StringProperty date;
+    private final BooleanProperty wasThere= new SimpleBooleanProperty();
+    private final StringProperty attendance=new SimpleStringProperty();
+    private final StringProperty date=new SimpleStringProperty();
     private boolean requestAttendance;
 
     public Attendance(Calendar dt, boolean here)
     {
-        wasThere = new SimpleBooleanProperty();
-        attendance = new SimpleStringProperty();
-        date = new SimpleStringProperty();
         requestAttendance=false;
  
         this.curDate = dt;
@@ -44,6 +42,10 @@ public class Attendance
          month++;
         int year = curDate.get(Calendar.YEAR);
         date.set(""+day+"/"+month+"-"+year);
+    }
+
+    public Attendance(java.sql.Date date, Boolean wasThere) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public Calendar getCurDate()

@@ -223,7 +223,7 @@ public class StudentViewController implements Initializable
         newStage.setWidth(1000);
         newStage.setResizable(false);
 
-        newScene.getStylesheets().add("attapp/gui/view/Style.css");
+        newScene.getStylesheets().add("/gui/view/Style.css");
 
         newStage.setScene(newScene);
         newStage.show();
@@ -234,7 +234,7 @@ public class StudentViewController implements Initializable
     private void studentLogOut(ActionEvent event) throws IOException
         {
 
-         FXMLLoader loader  = new FXMLLoader(getClass().getResource("/attapp/gui/view/LoginView.fxml"));
+         FXMLLoader loader  = new FXMLLoader(getClass().getResource("/gui/view/LoginView.fxml"));
         Parent root = loader.load();
         LoginController con = loader.getController();
         con.setRootLayout(rootLayout);
