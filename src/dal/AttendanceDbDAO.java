@@ -213,6 +213,27 @@ public class AttendanceDbDAO implements DAOInterface
 
         return addedTeacher;
     }
+    public ArrayList<Attendance> getAttendance( int studId)throws SQLServerException, IOException, SQLException{
+        DbConnection dc = new DbConnection();
+       ArrayList<Attendance> attenList = new ArrayList<>();
+        try (Connection con = dc.getConnection(); PreparedStatement pstmt = con.prepareStatement("select * from Attendance where studentID=(?)  ;")) {
+            Attendance AttenToGet = null;
+              pstmt.setInt(1, studId);
+//               pstmt.setDate(2, td);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Date date = rs.getDate("attendanceDay");
+                Boolean wasThere = rs.getBoolean("attendance");
+
+                AttenToGet = new Attendance(date, wasThere);
+                System.out.println(AttenToGet = new Attendance(date, wasThere));
+                attenList.add(AttenToGet);
+            }
+            return attenList;
+        }
+
+    }
 }
 
 

@@ -21,7 +21,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import dal.Authentication;
+import gui.model.SchoolAppModel;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * FXML Controller class
@@ -45,6 +48,7 @@ public class LoginController implements Initializable
     private Label infoLabel;
 
     SchoolAppManager bll;
+    SchoolAppModel sam;
 
     public LoginController() throws IOException {
         this.bll = new SchoolAppManager();
@@ -64,7 +68,7 @@ public class LoginController implements Initializable
         Student stud = bll.getLoginStudent(username.getText(), password.getText());
         if (stud != null)
         {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/attapp/gui/view/StudentView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/view/StudentView.fxml"));
             
             StudentViewController.setStudent(stud);
             Parent root = loader.load();
@@ -87,15 +91,13 @@ public class LoginController implements Initializable
     @FXML
     private void openTeacher(ActionEvent event) throws IOException, SQLException
     {
-        Teacher teach = bll.validateTeacherLogin(username.getText(), password.getText());
-                if (teach != null)
-        {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/attapp/gui/view/TeacherView.fxml"));
-            Parent root = loader.load();
-            TeacherViewController controller = loader.getController();
-            controller.setRootLayout(rootLayout);
-            rootLayout.setCenter(root);
-        } else
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gui/view/TeacherView.fxml"));
+        Parent root = loader.load();
+        TeacherViewController controller = loader.getController();
+//        controller.setTeacher(sam.getTeacher());
+        controller.setRootLayout(rootLayout);
+        rootLayout.setCenter(root);
+//        } else
         {
             infoLabel.setText("Please type a valid password");
         }

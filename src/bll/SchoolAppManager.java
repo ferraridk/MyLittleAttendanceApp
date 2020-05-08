@@ -4,10 +4,13 @@ import java.sql.Date;
 import be.Attendance;
 import be.Student;
 import be.Teacher;
+import com.microsoft.sqlserver.jdbc.SQLServerException;
+import dal.AttendanceDbDAO;
 import dal.Authentication;
 import dal.SchoolAppDAL;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  *
@@ -17,6 +20,7 @@ public class SchoolAppManager
 {
     private final Authentication authentication;
     private final SchoolAppDAL dal;
+    private AttendanceDbDAO DAL;
 
     public SchoolAppManager() throws IOException
     {
@@ -58,8 +62,12 @@ public class SchoolAppManager
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public Teacher validateTeacherLogin(String text, String text0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Teacher validateTeacherLogin(String text, String text0) throws SQLException {
+        return authentication.validateTeacherLogin(text, text0);
+    }
+
+    public ArrayList<Attendance> getAttendance( int studId)throws SQLServerException, IOException, SQLException{
+        return DAL.getAttendance(studId);
     }
 
 }

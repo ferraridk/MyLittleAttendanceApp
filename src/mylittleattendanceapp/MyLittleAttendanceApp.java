@@ -39,7 +39,7 @@ public class MyLittleAttendanceApp extends Application
         primaryStage.setResizable(false);
         // Load root layout from fxml file.
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(MyLittleAttendanceApp.class.getResource("/attapp/gui/view/RootLayout.fxml"));
+        loader.setLocation(MyLittleAttendanceApp.class.getResource("/gui/view/RootLayout.fxml"));
         rootLayout = (BorderPane) loader.load();
         
         rootLayout.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -109,7 +109,7 @@ public class MyLittleAttendanceApp extends Application
     private void initView() throws IOException
     {
         FXMLLoader loader = new FXMLLoader();
-        loader.setLocation(MyLittleAttendanceApp.class.getResource("/attapp/gui/view/LoginView.fxml"));
+        loader.setLocation(MyLittleAttendanceApp.class.getResource("/gui/view/LoginView.fxml"));
         AnchorPane logIn = (AnchorPane) loader.load();
 
         LoginController controller = loader.getController();
