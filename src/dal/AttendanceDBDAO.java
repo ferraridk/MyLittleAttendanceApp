@@ -10,25 +10,41 @@ import be.Student;
 import be.Teacher;
 import com.microsoft.sqlserver.jdbc.SQLServerException;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.sql.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author Christian Occhionero
  */
-public class AttendanceDbDAO implements DAOInterface {
+public class AttendanceDbDAO implements DAOInterface 
+{
 
-    
+    public static Attendance editAttendance(Student stud, Attendance date) throws SQLServerException, SQLException
+    {
+        
+        Attendance at = null;
+        DbConnection dc = new DbConnection();
+        try(Connection con = dc.getConnection(); PreparedStatement pstmt = con.prepareStatement("UPDATE Attendance SET attendance = '(?)' "
+                + "WHERE studentID = (?) AND attendanceDay = '(?)'; ");)
+        {
+            pstmt.setBoolean(1, true);
+            pstmt.setInt(2, stud.getId());
+            pstmt.setObject(3, date.getDate());
+            ResultSet rs = pstmt.executeQuery();
+            
+            while (rs.next())
+            {
+                
+            }
+            
+        }
+        return at;
+    }
     
     @Override
     public boolean checkForDailyAttendance(Date date) throws SQLServerException, IOException, SQLException{
@@ -45,6 +61,8 @@ public class AttendanceDbDAO implements DAOInterface {
         return wasThere;
     }
 
+    
+    
     @Override
     public boolean checkForSchoolNetWork() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

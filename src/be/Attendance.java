@@ -1,7 +1,6 @@
 package be;
 
 import java.util.Calendar;
-import java.util.Date;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
